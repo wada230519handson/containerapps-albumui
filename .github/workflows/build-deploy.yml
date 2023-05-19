@@ -8,6 +8,7 @@ env:
   # Add envs
   RESOURCE_GROUP_NAME: handson-CICD # 準備タスクで作成されたリソースグループ名をここに記載
   CONTAINERAPP_NAME:  ctapp-demo-ui # 準備タスクで作成された API Container App 名 `ctapp-demo-api` をここに記載
+  API_BASE_URL: https://ctapp-demo-api.delightfuldesert-53ae514f.koreacentral.azurecontainerapps.io # 準備タスクで作成された API Container App のアプリケーション URL をここに記載
   
 jobs:
   build:
@@ -71,7 +72,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # Add a step
+            # Add a step
       - name: Deploy to containerapp
         uses: azure/CLI@v1
         with:
@@ -102,4 +103,5 @@ jobs:
               --name ${{ env.CONTAINERAPP_NAME }} \
               --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
               --container-name $container_name \
-              --image ${{ env.CONTAINER_REGISTRY }}/${{ env.REPOSITORY_NAME }}:${{ github.sha }}
+              --image ${{ env.CONTAINER_REGISTRY }}/${{ env.REPOSITORY_NAME }}:${{ github.sha }} \
+              --set-env-vars API_BASE_URL=${{ env.API_BASE_URL }}
